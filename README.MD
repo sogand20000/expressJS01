@@ -10,10 +10,14 @@ useful for me
 
 ## node .
 
-##nodemon
+## nodemon
 
 ## npm install -g nodemon
 
 ## npx nodemon
 
 ## npm i joi
+
+## Add validation
+
+## Post ,Update,Get ,Delete in express js

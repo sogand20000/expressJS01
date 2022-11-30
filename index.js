@@ -33,10 +33,8 @@ app.post('/api/courses', (request, response) => {
   //validation
   const { error } = validateCoures(request.body)
 
-  if (error) {
-    response.status(400).send(error.details[0].message)
-    return
-  }
+  if (error) return response.status(400).send(error.details[0].message)
+
   const course = {
     id: courses.length + 1,
     name: request.body.name,
@@ -50,31 +48,39 @@ app.put('/api/courses/:id', (request, response) => {
   //Look up the course  //If not existing ,return 404
 
   const course = courses.find((x) => x.id === parseInt(request.params.id))
-  if (!course) {
-    response.status(404).send('The course with the given ID was not found')
-    return
-  }
+  if (!course)
+    return response
+      .status(404)
+      .send('The course with the given ID was not found')
+
   //validate //If invalid ,return 400 -Bad request
 
   const { error } = validateCoures(request.body)
-  console.log(error)
-  if (error) {
-    response.status(400).send(error.details[0].message)
-    return
-  }
+  if (error) return response.status(400).send(error.details[0].message)
 
-  //Update course
-
+  //Update course  //Return the updated course
   course.name = request.body.name
   response.send(course)
-  //Return the updated course
+})
+
+app.delete('/api/courses/:id', (request, response) => {
+  //Look up the course  // Not existing ,return 404
+  const course = courses.find((x) => x.id === parseInt(request.params.id))
+  if (!course)
+    return response
+      .status(404)
+      .send('The course with the given ID was not found')
+
+  //Delete
+  const index = courses.indexOf(course)
+  courses.splice(index, 1)
+  response.send(course)
 })
 
 var port = process.env.PORT || '3000'
 app.listen(port, () => console.log(`server is running on ${port}`))
 
 function validateCoures(course) {
-  debugger
   console.log(course)
   const schema = Joi.object({
     name: Joi.string().min(3).required(),
